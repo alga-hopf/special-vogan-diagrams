@@ -1,7 +1,8 @@
 '''
-   This algorithm checks if a given adjoint orbits is special.
+   This algorithm checks if a given adjoint orbits of simple Lie groups admitting 
+   a canonical special locally homogeneous compatible almost-complex structure.
    For the details, see ....
-   This is the SageMath version.
+   The Lie algebra of the orbit is computed using the theorems in the paper "Equivalence classes of Vogan diagrams", https://www.sciencedirect.com/science/article/pii/S0021869303007269
 
    Copyright (C) 2022  Alice Gatti
 
@@ -21,7 +22,6 @@
 
 
 import numpy as np
-import networkx as nx
 import time
 import argparse
 
@@ -90,7 +90,6 @@ if __name__ == "__main__":
 		return s_ext[j-1]-s_ext[j+1]+2*(tau_an(x,s,rank))
 
 	# Bn
-
 	def tau_bn(x,s,n):
 		s_ext=[0]+s+[n+1]
 		j=np.argwhere(np.array(s)==x)[0][0]+1
@@ -133,7 +132,6 @@ if __name__ == "__main__":
 		    return -2*rank+2*s_ext[j-1]+2*(tau_bn(x,s,rank))
 
 	# Cn
-
 	def tau_cn(x,s,rank):
 		s_ext=[0]+s+[rank+1]
 		j=np.argwhere(np.array(s)==x)[0][0]+1
@@ -164,14 +162,12 @@ if __name__ == "__main__":
 		            s1=s1_an+t2_an+(s_ext[j+1]-s_ext[j])+s2_an-delta(s_ext[-2],s_ext[j+2*ceil((len(s)-(j+1))/2)+1])
 		            s2=s2_an
 		            t1=t1_an
-		            t2=t2_an+s1_an+(s_ext[j]-s_ext[j-1])+t1_an-delta(s_ext[-2],s_ext[j+2*ceil((len(s)-(j+1))/2)+1])#-delta(s_ext[-2],s_ext[j+2*ceil((len(s)-j)/2)])
+		            t2=t2_an+s1_an+(s_ext[j]-s_ext[j-1])+t1_an-delta(s_ext[-2],s_ext[j+2*ceil((len(s)-(j+1))/2)+1])
 		            return s1+s2-(t1+t2)
 		    else:
 		        if x==rank:
 		            s2_an=sum(s_ext[j-2*k+1]-s_ext[j-2*k] for k in range(1,floor(j/2)+1))
 		            t1_an=sum(s_ext[j-2*k]-s_ext[j-2*k-1] for k in range(1,floor((j+1)/2)))
-		            #roots_2=sum((s_ext[j-2*k+1]-s_ext[j-2*k])*sum(s_ext[k-2*l+1]-s_ext[k-2*l] for l in range(1,floor(k/2)+1)) for k in range(0,floor(j/2)+1))
-		            #comp_an=sum(s_ext[j-1-2*k+1]-s_ext[j-1-2*k] for k in range(1,floor(j/2)+1))
 		            delta_n=s2_an 
 		            delta_nm=s2_an+t1_an 
 		            return -delta_nm+2*delta_n
@@ -223,7 +219,6 @@ if __name__ == "__main__":
 		    return -3-s_ext[j]+s_ext[j-1]+2*(tau_cn(x,s,rank))
 
 	# Dn
-
 	def tau_dn(x,s,rank):
 		s_ext=[0]+s+[rank+1]
 		j=np.argwhere(np.array(s)==x)[0][0]+1
@@ -255,8 +250,6 @@ if __name__ == "__main__":
 		        s2=s2_an
 		        t1=t1_an
 		        t2=t2_an+t1_an+s1_an+(s_ext[j]-s_ext[j-1])-delta(s_ext[-3],x)
-		        #print(s1_an,s2_an,t1_an,t2_an)
-		        #print(s1,s2,t1,t2)
 		        return s1+s2-(t1+t2)
 
 		    elif x!=s[-1] and len(set(s).intersection(set([rank-1,rank])))==2: 
@@ -264,10 +257,10 @@ if __name__ == "__main__":
 		        s2_an=sum(s_ext[j-2*k+1]-s_ext[j-2*k] for k in range(1,floor(j/2)+1))
 		        t2_an=sum(s_ext[j+2*k+1]-s_ext[j+2*k] for k in range(1,ceil((len(s)-(j+1))/2)+1))
 		        t1_an=sum(s_ext[j-2*k]-s_ext[j-2*k-1] for k in range(1,floor((j+1)/2)))
-		        s1=t1_an+(s_ext[j]-s_ext[j-1]-1)+s1_an+s1_an-3+2*delta(rank,s_ext[j+2*ceil((len(s)-j)/2)])#+(rank-2-s_ext[-4])*delta(rank,s_ext[j+2*ceil((len(s)-j)/2)])
+		        s1=t1_an+(s_ext[j]-s_ext[j-1]-1)+s1_an+s1_an-3+2*delta(rank,s_ext[j+2*ceil((len(s)-j)/2)])
 		        s2=s2_an
 		        t1=t1_an
-		        t2=s2_an+t2_an+(s_ext[j+1]-s_ext[j]-1)+2*delta(rank,s_ext[j+2*ceil((len(s)-j-1)/2)+1])-3+t2_an#+(rank-2-s_ext[-4]-3)*delta(rank,s_ext[j+2*ceil((len(s)-j-1)/2)+1])
+		        t2=s2_an+t2_an+(s_ext[j+1]-s_ext[j]-1)+2*delta(rank,s_ext[j+2*ceil((len(s)-j-1)/2)+1])-3+t2_an
 		        return s1+s2-(t1+t2)
 
 		    elif x==s[-1]:
@@ -334,8 +327,6 @@ if __name__ == "__main__":
 		    coeff=xi_coeff_cn([(l,s,rank) for l in s])
 		elif lieType=='D':
 		    coeff=xi_coeff_dn([(l,s,rank) for l in s])
-		#else:
-		 #   return 'Type not implemented!'
 		coeff=list(coeff)
 		signs=[]
 		for i in range(len(s)):
@@ -350,7 +341,8 @@ if __name__ == "__main__":
 		else:
 		    return 'No'
 		    
-	P=[S[i]-1 for i in range(len(s))]
+	P=[S[i]-1 for i in range(len(S))]
+	isSpecial=1
 	
 	if lieType in ['A','B','C','D']:
 		print('')
@@ -375,177 +367,7 @@ if __name__ == "__main__":
 		print('Is the diagram special? ',result)
 		t1=time.time()-t0
 		if result!='No':
-			if lieType=='A':
-				equivclass=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
-				if equivclass<=((rank+1)/2).floor():
-					eqclass=equivclass
-				else:
-					eqclass=rank+1-equivclass
-				print('Lie algebra: su('+str(eqclass)+','+str(rank+1-eqclass)+')')
-			elif lieType=='B':
-				eqclass=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
-				print('Lie algebra: so('+str(2*eqclass)+','+str(2*rank-2*eqclass+1)+')')
-			elif lieType=='C':
-				if rank-1 in P:
-					print('Lie algebra: sp('+str(rank)+',R)')
-				else:
-					N=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
-					if N<= rank/2:
-						eqclass=N
-					else:
-						eqclass=rank-N
-					print('Lie algebra: sp('+str(eqclass)+','+str(rank-eqclass)+')')
-			elif lieType=='D':	
-				if (rank-2 in P and rank-1 not in P) or (rank-2 not in P and rank-1 in P) :
-					print('Lie algebra: so*('+str(2*rank)+')')
-				elif Set([rank-2,rank-1]) in P:
-					N=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)-1))
-					if N<=rank/2:
-						eqclass=N-1
-					else:
-						eqclass=rank-N-1
-					print('Lie algebra: so('+str(2*eqclass)+','+str(2*rank-2*eqclass)+')')
-				else:
-					N=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
-					if N<=rank/2:
-						eqclass=N
-					else:
-						eqclass=rank-N
-					print('Lie algebra: so('+str(2*eqclass)+','+str(2*rank-2*eqclass)+')')
-			elif lieType=='G':
-				print('Lie algebra: g2(2)')
-			elif lieType=='F':
-				if Set(P).intersection(Set([0,1]))!=Set([]):
-					print('Lie algebra: f4(4)')
-				else:
-					print('Lie algebra: f4(-20)')
-			elif lieType=='E' and rank==6:
-				II=[j for j in P if j<=3 and j!=1]
-				JJ=[j for j in P if j>3]
-				if 1 in P:
-					s=1
-				else:
-					s=0
-				if II!=[] or JJ!=[]:
-					if II!=[] and 0 not in II:
-						I=sum((-1)^(len(II)-a-1)*(II[a]) for a in range(len(II)))
-					elif 0 in II:
-						I=(-1)^(len(II)-1)+sum((-1)^(len(II)-a)*(II[a]) for a in range(len(II)))
-					else:
-						I=0
-					J=sum((-1)^(len(JJ)-a-1)*(JJ[a]) for a in range(len(JJ)))
-					print(I,J)
-					if P==[0] or P==[5] or P==[2,4] or P==[0,3,4] or P==[0,1] or P==[1,2] or P==[1,4] or P==[1,5] or P==[1,3,5] or (len(JJ)!=1 and J==2-I and (I+s)%2==1) or (len(JJ)!=1 and J==4-I and (I+s)%2==0) or (len(JJ)!=1 and J==1-I) or (len(JJ)==1 and ((J==4+I and (I+s)%2==1) or J==1+I)):
-						print('Lie algebra: e6(-14)')
-					else:
-						print('Lie algebra: e6(2)')				
-				else: 
-					print('Lie algebra: e6(2)')
-			elif lieType=='E' and rank==7:
-				II=[j for j in P if j<=3 and j!=1]
-				JJ=[j for j in P if j>3]
-				if 1 in P:
-					s=1
-				else:
-					s=0
-				if II!=[] or JJ!=[]:
-					if II!=[] and 0 not in II:
-						I=sum((-1)^(len(II)-a-1)*(II[a]) for a in range(len(II)))
-					elif 0 in II:
-						I=(-1)^(len(II)-1)+sum((-1)^(len(II)-a)*(II[a]) for a in range(len(II)))
-					else:
-						I=0
-					J=sum((-1)^(len(JJ)-a-1)*(JJ[a]) for a in range(len(JJ)))
-					if P==[0] or P==[3] or P==[5] or P==[3,5] or P==[3,4,6] or P==[1,4] or P==[1,6] or P==[1,2,4] or P==[0,1,3,4] or (len(JJ)!=1 and (((J==1-I or J==3-I) and (I+s)%2==1) or ((J==2-I or J==4-I) and (I+s)%2==0) )) or (len(JJ)==1 and (((J==1+I or J==2+I or J==3+I or J==5+I) and (I+s)%2==0) or (J==4+I and (I+s)%2==1))):
-						print('Lie algebra: e7(-5)')
-					elif P==[6] or P==[2,4] or P==[0,3,4] or P==[0,1] or P==[1,2] or P==[1,5] or P==[1,3,5] or P==[1,3,4,6] or P==[1,3,4,5,6] or (len(JJ)!=1 and ((J==1-I and (I+s)%2==0) or (J==2-I and (I+s)%2==1))) or (len(JJ)==1 and ((J==1+I or J==2+I or J==5+I) and (I+s)%2==1)):
-						print('Lie algebra: e7(-25)')	
-					else:
-						print('Lie algebra: e7(7)')			
-				else: 
-					print('Lie algebra: e7(7)')
-			elif lieType=='E' and rank==8:
-				II=[j for j in P if j<=3 and j!=1]
-				JJ=[j for j in P if j>3]
-				if 1 in P:
-					s=1
-				else:
-					s=0
-				if II!=[] or JJ!=[]:
-					if II!=[] and 0 not in II:
-						I=sum((-1)^(len(II)-a-1)*(II[a]) for a in range(len(II)))
-					elif 0 in II:
-						I=(-1)^(len(II)-1)+sum((-1)^(len(II)-a)*(II[a]) for a in range(len(II)))
-					else:
-						I=0
-					J=sum((-1)^(len(JJ)-a-1)*(JJ[a]) for a in range(len(JJ)))
-					if P==[7] or P==[2] or P==[3] or P==[0,2] or P==[1,2] or P==[1,5] or P==[1,6] or (len(JJ)!=1 and ((J==1-I or J==5-I) and (I+s)%2==0)) or (len(JJ)!=1 and (J==3-I and (I+s)%2==1)) or (len(JJ)!=1 and (J==2-I or J==6-I)) or (len(JJ)==1 and ((J==1+I or J==5+I) and (I+s)%2==1)) or (len(JJ)==1 and ((J==3+I and (I+s)%2==0) or J==2+I or J==6+I)):
-						print('Lie algebra: e8(-24)')
-					else:
-						print('Lie algebra: e8(8)')					
-				else: 
-					print('Lie algebra: e8(8)')
-			if len(P)<rank:
-				st=str(CartanType([lieType,rank]).subtype([i+1 for i in range(rank) if i not in P])).translate({ord('['):None,ord("'"):None,ord(','):None,ord(']'):None,ord(' '):None})
-				#st=st.translate({ord('relabelledby'):None})
-				stab=''
-				for i in range(len(st)):
-					if st[i] in ['A','B','C','D','E']:
-						if st[i]=='A':
-							stab=stab+'su('
-							for j in range(i+1,len(st)):
-								if st[j]=='r' or st[j]=='x' or j==len(st)-1:
-									if j==len(st)-1:
-										stab=stab+str(int(st[i+1:len(st)])+1)+') x '
-										break
-									else:
-										stop=j
-										stab=stab+str(int(st[i+1:stop])+1)+') x ' 
-										break
-						if st[i]=='B':
-							stab=stab+'so('
-							for j in range(i,len(st)):
-								if st[j]=='r' or st[j]=='x' or j==len(st)-1:
-									if j==len(st)-1:
-										stab=stab+str(int(st[i+1:len(st)])*2+1)+') x '
-										break
-									else:
-										stop=j
-										stab=stab+str(int(st[i+1:stop])*2+1)+') x ' 
-										break
-						if st[i]=='C':
-							stab=stab+'sp('
-							for j in range(i,len(st)):
-								if st[j]=='r' or st[j]=='x' or j==len(st)-1:
-									if j==len(st)-1:
-										stab=stab+str(int(st[i+1:len(st)]))+') x '
-										break
-									else:
-										stop=j
-										stab=stab+str(int(st[i+1:stop]))+') x ' 
-										break
-						if st[i]=='D':
-							stab=stab+'so('
-							for j in range(i,len(st)):
-								if st[j]=='r' or st[j]=='x' or j==len(st)-1:
-									if j==len(st)-1:
-										stab=stab+str(int(st[i+1:len(st)])*2)+') x '
-										break
-									else:
-										stop=j
-										stab=stab+str(int(st[i+1:stop])*2)+') x ' 
-										break
-						if st[i]=='E':
-							if st[i+1]=='6':
-								stab=stab+'e6 x '
-							if st[i+1]=='7':
-								stab=stab+'e7 x '
-				print('Stabilizer: '+stab[:-2]+' x R'+str(len(P))+'\n')
-			else:
-				print('Stabilizer: R'+str(len(P))+'\n')
-
-
-		print('Time:',t1)
+			isSpecial=0
 	else:
 		print('')
 		print(lieType+str(rank))
@@ -582,174 +404,177 @@ if __name__ == "__main__":
 		else:
 			print('Is the diagram special? No')
 		t1=time.time()-t0
-		if isSpecial==0:
-			if lieType=='A':
-				equivclass=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
-				if equivclass<=((rank+1)/2).floor():
-					eqclass=equivclass
-				else:
-					eqclass=rank+1-equivclass
-				print('Lie algebra: su('+str(eqclass)+','+str(rank+1-eqclass)+')')
-			elif lieType=='B':
-				eqclass=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
-				print('Lie algebra: so('+str(2*eqclass)+','+str(2*rank-2*eqclass+1)+')')
-			elif lieType=='C':
-				if rank-1 in P:
-					print('Lie algebra: sp('+str(rank)+',R)')
-				else:
-					N=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
-					if N<= rank/2:
-						eqclass=N
-					else:
-						eqclass=rank-N
-					print('Lie algebra: sp('+str(eqclass)+','+str(rank-eqclass)+')')
-			elif lieType=='D':	
-				if (rank-2 in P and rank-1 not in P) or (rank-2 not in P and rank-1 in P) :
-					print('Lie algebra: so*('+str(2*rank)+')')
-				elif Set([rank-2,rank-1]) in P:
-					N=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)-1))
-					if N<=rank/2:
-						eqclass=N-1
-					else:
-						eqclass=rank-N-1
-					print('Lie algebra: so('+str(2*eqclass)+','+str(2*rank-2*eqclass)+')')
-				else:
-					N=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
-					if N<=rank/2:
-						eqclass=N
-					else:
-						eqclass=rank-N
-					print('Lie algebra: so('+str(2*eqclass)+','+str(2*rank-2*eqclass)+')')
-			elif lieType=='G':
-				print('Lie algebra: g2(2)')
-			elif lieType=='F':
-				if Set(P).intersection(Set([0,1]))!=Set([]):
-					print('Lie algebra: f4(4)')
-				else:
-					print('Lie algebra: f4(-20)')
-			elif lieType=='E' and rank==6:
-				II=[j for j in P if j<=3 and j!=1]
-				JJ=[j for j in P if j>3]
-				if 1 in P:
-					s=1
-				else:
-					s=0
-				if II!=[] or JJ!=[]:
-					if II!=[] and 0 not in II:
-						I=sum((-1)^(len(II)-a-1)*(II[a]) for a in range(len(II)))
-					elif 0 in II:
-						I=(-1)^(len(II)-1)+sum((-1)^(len(II)-a)*(II[a]) for a in range(len(II)))
-					else:
-						I=0
-					J=sum((-1)^(len(JJ)-a-1)*(JJ[a]) for a in range(len(JJ)))
-					print(I,J)
-					if P==[0] or P==[5] or P==[2,4] or P==[0,3,4] or P==[0,1] or P==[1,2] or P==[1,4] or P==[1,5] or P==[1,3,5] or (len(JJ)!=1 and J==2-I and (I+s)%2==1) or (len(JJ)!=1 and J==4-I and (I+s)%2==0) or (len(JJ)!=1 and J==1-I) or (len(JJ)==1 and ((J==4+I and (I+s)%2==1) or J==1+I)):
-						print('Lie algebra: e6(-14)')
-					else:
-						print('Lie algebra: e6(2)')				
-				else: 
-					print('Lie algebra: e6(2)')
-			elif lieType=='E' and rank==7:
-				II=[j for j in P if j<=3 and j!=1]
-				JJ=[j for j in P if j>3]
-				if 1 in P:
-					s=1
-				else:
-					s=0
-				if II!=[] or JJ!=[]:
-					if II!=[] and 0 not in II:
-						I=sum((-1)^(len(II)-a-1)*(II[a]) for a in range(len(II)))
-					elif 0 in II:
-						I=(-1)^(len(II)-1)+sum((-1)^(len(II)-a)*(II[a]) for a in range(len(II)))
-					else:
-						I=0
-					J=sum((-1)^(len(JJ)-a-1)*(JJ[a]) for a in range(len(JJ)))
-					if P==[0] or P==[3] or P==[5] or P==[3,5] or P==[3,4,6] or P==[1,4] or P==[1,6] or P==[1,2,4] or P==[0,1,3,4] or (len(JJ)!=1 and (((J==1-I or J==3-I) and (I+s)%2==1) or ((J==2-I or J==4-I) and (I+s)%2==0) )) or (len(JJ)==1 and (((J==1+I or J==2+I or J==3+I or J==5+I) and (I+s)%2==0) or (J==4+I and (I+s)%2==1))):
-						print('Lie algebra: e7(-5)')
-					elif P==[6] or P==[2,4] or P==[0,3,4] or P==[0,1] or P==[1,2] or P==[1,5] or P==[1,3,5] or P==[1,3,4,6] or P==[1,3,4,5,6] or (len(JJ)!=1 and ((J==1-I and (I+s)%2==0) or (J==2-I and (I+s)%2==1))) or (len(JJ)==1 and ((J==1+I or J==2+I or J==5+I) and (I+s)%2==1)):
-						print('Lie algebra: e7(-25)')	
-					else:
-						print('Lie algebra: e7(7)')			
-				else: 
-					print('Lie algebra: e7(7)')
-			elif lieType=='E' and rank==8:
-				II=[j for j in P if j<=3 and j!=1]
-				JJ=[j for j in P if j>3]
-				if 1 in P:
-					s=1
-				else:
-					s=0
-				if II!=[] or JJ!=[]:
-					if II!=[] and 0 not in II:
-						I=sum((-1)^(len(II)-a-1)*(II[a]) for a in range(len(II)))
-					elif 0 in II:
-						I=(-1)^(len(II)-1)+sum((-1)^(len(II)-a)*(II[a]) for a in range(len(II)))
-					else:
-						I=0
-					J=sum((-1)^(len(JJ)-a-1)*(JJ[a]) for a in range(len(JJ)))
-					if P==[7] or P==[2] or P==[3] or P==[0,2] or P==[1,2] or P==[1,5] or P==[1,6] or (len(JJ)!=1 and ((J==1-I or J==5-I) and (I+s)%2==0)) or (len(JJ)!=1 and (J==3-I and (I+s)%2==1)) or (len(JJ)!=1 and (J==2-I or J==6-I)) or (len(JJ)==1 and ((J==1+I or J==5+I) and (I+s)%2==1)) or (len(JJ)==1 and ((J==3+I and (I+s)%2==0) or J==2+I or J==6+I)):
-						print('Lie algebra: e8(-24)')
-					else:
-						print('Lie algebra: e8(8)')					
-				else: 
-					print('Lie algebra: e8(8)')
-			if len(P)<rank:
-				st=str(CartanType([lieType,rank]).subtype([i+1 for i in range(rank) if i not in P])).translate({ord('['):None,ord("'"):None,ord(','):None,ord(']'):None,ord(' '):None})
-				#st=st.translate({ord('relabelledby'):None})
-				stab=''
-				for i in range(len(st)):
-					if st[i] in ['A','B','C','D','E']:
-						if st[i]=='A':
-							stab=stab+'su('
-							for j in range(i+1,len(st)):
-								if st[j]=='r' or st[j]=='x' or j==len(st)-1:
-									if j==len(st)-1:
-										stab=stab+str(int(st[i+1:len(st)])+1)+') x '
-										break
-									else:
-										stop=j
-										stab=stab+str(int(st[i+1:stop])+1)+') x ' 
-										break
-						if st[i]=='B':
-							stab=stab+'so('
-							for j in range(i,len(st)):
-								if st[j]=='r' or st[j]=='x' or j==len(st)-1:
-									if j==len(st)-1:
-										stab=stab+str(int(st[i+1:len(st)])*2+1)+') x '
-										break
-									else:
-										stop=j
-										stab=stab+str(int(st[i+1:stop])*2+1)+') x ' 
-										break
-						if st[i]=='C':
-							stab=stab+'sp('
-							for j in range(i,len(st)):
-								if st[j]=='r' or st[j]=='x' or j==len(st)-1:
-									if j==len(st)-1:
-										stab=stab+str(int(st[i+1:len(st)]))+') x '
-										break
-									else:
-										stop=j
-										stab=stab+str(int(st[i+1:stop]))+') x ' 
-										break
-						if st[i]=='D':
-							stab=stab+'so('
-							for j in range(i,len(st)):
-								if st[j]=='r' or st[j]=='x' or j==len(st)-1:
-									if j==len(st)-1:
-										stab=stab+str(int(st[i+1:len(st)])*2)+') x '
-										break
-									else:
-										stop=j
-										stab=stab+str(int(st[i+1:stop])*2)+') x ' 
-										break
-						if st[i]=='E':
-							if st[i+1]=='6':
-								stab=stab+'e6 x '
-							if st[i+1]=='7':
-								stab=stab+'e7 x '
-				print('Stabilizer: '+stab[:-2]+' x R'+str(len(P))+'\n')
+		
+	# Compute the Lie algebra of the orbit and the stabilizer
+	if isSpecial==0:
+		# Compute the Lie algebra of the orbit
+		if lieType=='A':
+			equivclass=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
+			if equivclass<=((rank+1)/2).floor():
+				eqclass=equivclass
 			else:
-				print('Stabilizer: R'+str(len(P))+'\n')
+				eqclass=rank+1-equivclass
+			print('Lie algebra: su('+str(eqclass)+','+str(rank+1-eqclass)+')')
+		elif lieType=='B':
+			eqclass=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
+			print('Lie algebra: so('+str(2*eqclass)+','+str(2*rank-2*eqclass+1)+')')
+		elif lieType=='C':
+			if rank-1 in P:
+				print('Lie algebra: sp('+str(rank)+',R)')
+			else:
+				N=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
+				if N<= rank/2:
+					eqclass=N
+				else:
+					eqclass=rank-N
+				print('Lie algebra: sp('+str(eqclass)+','+str(rank-eqclass)+')')
+		elif lieType=='D':	
+			if (rank-2 in P and rank-1 not in P) or (rank-2 not in P and rank-1 in P) :
+				print('Lie algebra: so*('+str(2*rank)+')')
+			elif Set([rank-2,rank-1]) in P:
+				N=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)-1))
+				if N<=rank/2:
+					eqclass=N-1
+				else:
+					eqclass=rank-N-1
+				print('Lie algebra: so('+str(2*eqclass)+','+str(2*rank-2*eqclass)+')')
+			else:
+				N=sum((-1)^(len(P)-s)*(P[s-1]+1) for s in range(1,len(P)+1))
+				if N<=rank/2:
+					eqclass=N
+				else:
+					eqclass=rank-N
+				print('Lie algebra: so('+str(2*eqclass)+','+str(2*rank-2*eqclass)+')')
+		elif lieType=='G':
+			print('Lie algebra: g2(2)')
+		elif lieType=='F':
+			if Set(P).intersection(Set([0,1]))!=Set([]):
+				print('Lie algebra: f4(4)')
+			else:
+				print('Lie algebra: f4(-20)')
+		elif lieType=='E' and rank==6:
+			II=[j for j in P if j<=3 and j!=1]
+			JJ=[j for j in P if j>3]
+			if 1 in P:
+				s=1
+			else:
+				s=0
+			if II!=[] or JJ!=[]:
+				if II!=[] and 0 not in II:
+					I=sum((-1)^(len(II)-a-1)*(II[a]) for a in range(len(II)))
+				elif 0 in II:
+					I=(-1)^(len(II)-1)+sum((-1)^(len(II)-a)*(II[a]) for a in range(len(II)))
+				else:
+					I=0
+				J=sum((-1)^(len(JJ)-a-1)*(JJ[a]) for a in range(len(JJ)))
+				print(I,J)
+				if P==[0] or P==[5] or P==[2,4] or P==[0,3,4] or P==[0,1] or P==[1,2] or P==[1,4] or P==[1,5] or P==[1,3,5] or (len(JJ)!=1 and J==2-I and (I+s)%2==1) or (len(JJ)!=1 and J==4-I and (I+s)%2==0) or (len(JJ)!=1 and J==1-I) or (len(JJ)==1 and ((J==4+I and (I+s)%2==1) or J==1+I)):
+					print('Lie algebra: e6(-14)')
+				else:
+					print('Lie algebra: e6(2)')				
+			else: 
+				print('Lie algebra: e6(2)')
+		elif lieType=='E' and rank==7:
+			II=[j for j in P if j<=3 and j!=1]
+			JJ=[j for j in P if j>3]
+			if 1 in P:
+				s=1
+			else:
+				s=0
+			if II!=[] or JJ!=[]:
+				if II!=[] and 0 not in II:
+					I=sum((-1)^(len(II)-a-1)*(II[a]) for a in range(len(II)))
+				elif 0 in II:
+					I=(-1)^(len(II)-1)+sum((-1)^(len(II)-a)*(II[a]) for a in range(len(II)))
+				else:
+					I=0
+				J=sum((-1)^(len(JJ)-a-1)*(JJ[a]) for a in range(len(JJ)))
+				if P==[0] or P==[3] or P==[5] or P==[3,5] or P==[3,4,6] or P==[1,4] or P==[1,6] or P==[1,2,4] or P==[0,1,3,4] or (len(JJ)!=1 and (((J==1-I or J==3-I) and (I+s)%2==1) or ((J==2-I or J==4-I) and (I+s)%2==0) )) or (len(JJ)==1 and (((J==1+I or J==2+I or J==3+I or J==5+I) and (I+s)%2==0) or (J==4+I and (I+s)%2==1))):
+					print('Lie algebra: e7(-5)')
+				elif P==[6] or P==[2,4] or P==[0,3,4] or P==[0,1] or P==[1,2] or P==[1,5] or P==[1,3,5] or P==[1,3,4,6] or P==[1,3,4,5,6] or (len(JJ)!=1 and ((J==1-I and (I+s)%2==0) or (J==2-I and (I+s)%2==1))) or (len(JJ)==1 and ((J==1+I or J==2+I or J==5+I) and (I+s)%2==1)):
+					print('Lie algebra: e7(-25)')	
+				else:
+					print('Lie algebra: e7(7)')			
+			else: 
+				print('Lie algebra: e7(7)')
+		elif lieType=='E' and rank==8:
+			II=[j for j in P if j<=3 and j!=1]
+			JJ=[j for j in P if j>3]
+			if 1 in P:
+				s=1
+			else:
+				s=0
+			if II!=[] or JJ!=[]:
+				if II!=[] and 0 not in II:
+					I=sum((-1)^(len(II)-a-1)*(II[a]) for a in range(len(II)))
+				elif 0 in II:
+					I=(-1)^(len(II)-1)+sum((-1)^(len(II)-a)*(II[a]) for a in range(len(II)))
+				else:
+					I=0
+				J=sum((-1)^(len(JJ)-a-1)*(JJ[a]) for a in range(len(JJ)))
+				if P==[7] or P==[2] or P==[3] or P==[0,2] or P==[1,2] or P==[1,5] or P==[1,6] or (len(JJ)!=1 and ((J==1-I or J==5-I) and (I+s)%2==0)) or (len(JJ)!=1 and (J==3-I and (I+s)%2==1)) or (len(JJ)!=1 and (J==2-I or J==6-I)) or (len(JJ)==1 and ((J==1+I or J==5+I) and (I+s)%2==1)) or (len(JJ)==1 and ((J==3+I and (I+s)%2==0) or J==2+I or J==6+I)):
+					print('Lie algebra: e8(-24)')
+				else:
+					print('Lie algebra: e8(8)')					
+			else: 
+				print('Lie algebra: e8(8)')
+		# Compute the Lie algebra of the stabilizer
+		if len(P)<rank:
+			st=str(CartanType([lieType,rank]).subtype([i+1 for i in range(rank) if i not in P])).translate({ord('['):None,ord("'"):None,ord(','):None,ord(']'):None,ord(' '):None})
+			stab=''
+			for i in range(len(st)):
+				if st[i] in ['A','B','C','D','E']:
+					if st[i]=='A':
+						stab=stab+'su('
+						for j in range(i+1,len(st)):
+							if st[j]=='r' or st[j]=='x' or j==len(st)-1:
+								if j==len(st)-1:
+									stab=stab+str(int(st[i+1:len(st)])+1)+') x '
+									break
+								else:
+									stop=j
+									stab=stab+str(int(st[i+1:stop])+1)+') x ' 
+									break
+					if st[i]=='B':
+						stab=stab+'so('
+						for j in range(i,len(st)):
+							if st[j]=='r' or st[j]=='x' or j==len(st)-1:
+								if j==len(st)-1:
+									stab=stab+str(int(st[i+1:len(st)])*2+1)+') x '
+									break
+								else:
+									stop=j
+									stab=stab+str(int(st[i+1:stop])*2+1)+') x ' 
+									break
+					if st[i]=='C':
+						stab=stab+'sp('
+						for j in range(i,len(st)):
+							if st[j]=='r' or st[j]=='x' or j==len(st)-1:
+								if j==len(st)-1:
+									stab=stab+str(int(st[i+1:len(st)]))+') x '
+									break
+								else:
+									stop=j
+									stab=stab+str(int(st[i+1:stop]))+') x ' 
+									break
+					if st[i]=='D':
+						stab=stab+'so('
+						for j in range(i,len(st)):
+							if st[j]=='r' or st[j]=='x' or j==len(st)-1:
+								if j==len(st)-1:
+									stab=stab+str(int(st[i+1:len(st)])*2)+') x '
+									break
+								else:
+									stop=j
+									stab=stab+str(int(st[i+1:stop])*2)+') x ' 
+									break
+					if st[i]=='E':
+						if st[i+1]=='6':
+							stab=stab+'e6 x '
+						if st[i+1]=='7':
+							stab=stab+'e7 x '
+			print('Stabilizer: '+stab[:-2]+' x R'+str(len(P))+'\n')
+		else:
+			print('Stabilizer: R'+str(len(P))+'\n')
 		
 		print('Time:',t1)
