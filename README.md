@@ -41,3 +41,7 @@ It is better to use this code to check Lie algebras up to rank 10. Just run ``sp
 The script returns all special adjoint orbits associated to the given Lie algebra, together with the underlying complex Lie algebra, its Dynkin diagram and its dimension and the indices of painted vertices. Then, if the diagram is special it returns the type (symplectic general type, symplectic Calabi-Yau or symplectic Fano), the Lie algebra of the orbit and the stabilizer, the Hermitian scalar curvature and the special vector.
 
 This code the one used in the paper [Almost Kähler geometry of adjoint orbits of semisimple Lie groups](https://link.springer.com/article/10.1007/s00209-022-02995-9)
+
+## Requirements
+- SageMath => 9.6
+- Numpy => 1.23
