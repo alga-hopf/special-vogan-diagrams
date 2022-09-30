@@ -1,6 +1,6 @@
 # Special adjoint orbits through the combinatorics of Vogan diagrams
 
-This repository contains codes to check if an adjoint orbit of a simple Lie algebra is special. Based on [Almost Kähler geometry of adjoint orbits of semisimple Lie groups](https://link.springer.com/article/10.1007/s00209-022-02995-9) and arXiv:...
+This repository contains codes to check if an adjoint orbit of a simple Lie algebra is special. Based on [Almost Kähler geometry of adjoint orbits of semisimple Lie groups](https://link.springer.com/article/10.1007/s00209-022-02995-9) and [Combinatorics of Vogan diagrams for almost-Kähler manifolds](https://arxiv.org/abs/2209.14543).
 
 ## Jupyter notebook (SageMath)
 
